@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/layout/header";
-import Footer from "@/components/layout/footer";
 import StickyFooter from "@/components/layout/footer";
 
 const geistSans = Geist({
@@ -16,8 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Your Name | Portfolio",
-  description: "Award-winning portfolio showcasing my work and skills",
+  title: "Katherine | Digital Experience Designer",
+  description: "Creative designer building impactful visual experiences across digital and physical worlds",
 };
 
 export default function RootLayout({
@@ -34,7 +33,6 @@ export default function RootLayout({
         <main className="pt-24 pb-16">
           {children}
         </main>
-        <Footer />
         <StickyFooter />
       </body>
     </html>

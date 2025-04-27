@@ -13,9 +13,8 @@ export default function StickyFooter() {
       const now = new Date();
       const hours = now.getHours().toString().padStart(2, '0');
       const minutes = now.getMinutes().toString().padStart(2, '0');
-      const seconds = now.getSeconds().toString().padStart(2, '0');
       
-      setCurrentTime(`${hours}:${minutes}:${seconds}`);
+      setCurrentTime(`${hours}:${minutes}`);
       
       // Get timezone offset
       const offset = -now.getTimezoneOffset() / 60;
@@ -24,22 +23,22 @@ export default function StickyFooter() {
     };
     
     updateTime();
-    const timer = setInterval(updateTime, 1000);
+    const timer = setInterval(updateTime, 60000); // Update every minute
     
     return () => clearInterval(timer);
   }, []);
   
   return (
-    <footer className="fixed bottom-0 left-0 right-0 h-16 border-t border-gray-200 dark:border-gray-800 bg-background z-40 flex items-center">
+    <footer className="fixed bottom-0 left-0 right-0 h-16 border-t border-gray-100 dark:border-gray-900 bg-background/80 backdrop-blur-md z-40 flex items-center">
       <div className="w-full flex justify-between items-center px-4 sm:px-6 lg:px-8">
         <div className="flex items-center">
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-blue-600"></div>
-            <span className="text-sm">CANADA</span>
+            <div className="w-2 h-2 rounded-full bg-blue-600"></div>
+            <span className="text-xs tracking-wider uppercase opacity-70">CANADA</span>
           </div>
         </div>
         
-        <div className="text-sm">
+        <div className="text-xs tracking-wider opacity-70">
           {currentTime} {timezone}
         </div>
         
@@ -48,7 +47,7 @@ export default function StickyFooter() {
             href="https://linkedin.com" 
             target="_blank" 
             rel="noopener noreferrer"
-            className="text-sm hover:text-blue-600 transition-colors"
+            className="text-xs tracking-wider uppercase opacity-70 hover:opacity-100 transition-opacity"
           >
             LINKEDIN
           </Link>
@@ -56,7 +55,7 @@ export default function StickyFooter() {
             href="https://behance.com" 
             target="_blank" 
             rel="noopener noreferrer"
-            className="text-sm hover:text-blue-600 transition-colors"
+            className="text-xs tracking-wider uppercase opacity-70 hover:opacity-100 transition-opacity"
           >
             BEHANCE
           </Link>

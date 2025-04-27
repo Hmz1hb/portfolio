@@ -40,3 +40,26 @@ html {
     --foreground: #ededed;
   }
 }
+
+main {
+  padding-bottom: 4rem; /* Adjust this value based on your sticky footer height */
+}
+
+/* Sticky footer styling */
+.fixed-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--background);
+  border-top: 1px solid #eaeaea;
+  z-index: 40;
+  height: 4rem;
+  display: flex;
+  align-items: center;
+}
+
+/* Dark mode support for the footer border */
+.dark .fixed-footer {
+  border-color: #333;
+}

@@ -3,6 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/layout/header";
 import StickyFooter from "@/components/layout/footer";
+import MouseFollow from "@/components/ui/mouse-follow";
+import MouseHoverEffect from "@/components/ui/mouse-hover-effect";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -15,8 +17,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Katherine | Digital Experience Designer",
-  description: "Creative designer building impactful visual experiences across digital and physical worlds",
+  title: "Your Name | Portfolio",
+  description: "Award-winning portfolio showcasing my work and skills",
 };
 
 export default function RootLayout({
@@ -29,6 +31,10 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        {/* Mouse animation components */}
+        <MouseFollow size={300} color="#3b82f6" blur={120} opacity={0.15} />
+        <MouseHoverEffect />
+        
         <Header />
         <main className="pt-24 pb-16">
           {children}

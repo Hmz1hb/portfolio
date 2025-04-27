@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 import { Button } from "../ui/button";
 import Container from "../ui/container";
-import FlowerObject from "../3d/FlowerObject";
+import ComputerObject from "../3d/ComputerObject";
 import { fadeInUp, staggerElements } from "@/lib/animations";
 
 export default function Hero() {
@@ -54,8 +54,8 @@ export default function Hero() {
       className="relative min-h-[90vh] flex items-center opacity-0 transition-all duration-1000"
     >
       {/* 3D Object Container - positioned to overlap with typography */}
-      <div className="absolute right-0 top-1/2 transform -translate-y-1/2 w-1/2 h-full z-0 opacity-80">
-        <FlowerObject />
+      <div className="absolute right-0 top-1/2 transform -translate-y-1/2 w-1/2 h-full z-0">
+        <ComputerObject />
       </div>
       
       {/* Background elements */}
@@ -78,9 +78,9 @@ export default function Hero() {
             ref={descriptionRef}
             className="text-base md:text-lg text-gray-600 dark:text-gray-400 mb-8 max-w-md opacity-0"
           >
-            HELLO THERE — I'M KATHERINE, AN AGILE DESIGNER HOPPING
-            ACROSS DIGITAL AND PHYSICAL WORLDS, CURRENTLY CREATING
-            IMPACTFUL VISUAL EXPERIENCES
+            HELLO THERE — I'M KATHERINE, A DEVELOPER & AI ARTIST
+            MERGING TECHNOLOGY WITH CREATIVITY TO BUILD 
+            AWARD-WINNING DIGITAL EXPERIENCES
           </p>
           
           <div 

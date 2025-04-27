@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ReactNode } from "react";
+import { ReactNode, useEffect, useState } from "react";
 
 interface ButtonProps {
   children: ReactNode;
@@ -24,6 +24,29 @@ export function Button({
   disabled = false,
   external = false,
 }: ButtonProps) {
+  const [isDarkMode, setIsDarkMode] = useState(false);
+  
+  // Detect dark mode
+  useEffect(() => {
+    // Initial check
+    setIsDarkMode(document.documentElement.classList.contains('dark'));
+    
+    // Create observer to watch for changes
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.attributeName === 'class') {
+          setIsDarkMode(document.documentElement.classList.contains('dark'));
+        }
+      });
+    });
+    
+    // Start observing
+    observer.observe(document.documentElement, { attributes: true });
+    
+    // Cleanup
+    return () => observer.disconnect();
+  }, []);
+  
   // Base styles
   const baseStyles = "rounded-full font-medium transition-colors inline-flex items-center justify-center";
   
@@ -34,12 +57,22 @@ export function Button({
     lg: "text-base px-6 py-3",
   };
   
-  // Variant styles
-  const variantStyles = {
-    primary: "bg-blue-600 hover:bg-blue-700 text-white",
-    secondary: "bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-foreground",
-    outline: "border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 text-foreground",
+  // Light mode variant styles
+  const lightVariantStyles = {
+    primary: "bg-blue-600 hover:bg-blue-700 text-white hover:text-white",
+    secondary: "bg-gray-200 hover:bg-gray-300 text-gray-800 hover:text-gray-900",
+    outline: "border-2 border-gray-500 hover:border-gray-500 bg-transparent hover:bg-gray-100 text-gray-800 hover:text-gray-900",
   };
+  
+  // Dark mode variant styles
+  const darkVariantStyles = {
+    primary: "bg-blue-600 hover:bg-blue-500 text-white hover:text-white",
+    secondary: "bg-gray-700 hover:bg-gray-600 text-white hover:text-white",
+    outline: "border-2 border-gray-400 hover:border-gray-300 bg-transparent hover:bg-gray-800 text-white hover:text-white",
+  };
+  
+  // Choose the right variant based on current mode
+  const variantStyles = isDarkMode ? darkVariantStyles : lightVariantStyles;
   
   // Combine all styles
   const buttonStyles = `${baseStyles} ${sizeStyles[size]} ${variantStyles[variant]} ${className}`;

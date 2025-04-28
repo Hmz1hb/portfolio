@@ -53,9 +53,11 @@ export default function Hero() {
       ref={heroRef}
       className="relative min-h-[90vh] flex items-center opacity-0 transition-all duration-1000"
     >
-      {/* 3D Object Container - positioned to overlap with typography */}
-      <div className="absolute right-0 top-1/2 transform -translate-y-1/2 w-1/2 h-full z-0">
-        <ComputerObject />
+      {/* 3D Object Container - positioned behind content on mobile, to the right on desktop */}
+      <div className="absolute inset-0 z-0 flex items-center justify-center md:justify-end">
+        <div className="w-full md:w-1/2 h-full opacity-30 md:opacity-100">
+          <ComputerObject />
+        </div>
       </div>
       
       {/* Background elements */}
@@ -65,10 +67,10 @@ export default function Hero() {
       </div>
       
       <Container className="pt-20 pb-16 relative z-10">
-        <div className="max-w-4xl">
+        <div className="max-w-4xl relative">
           <h1 
             ref={titleRef}
-            className="text-7xl sm:text-8xl font-light tracking-tight mb-6 opacity-0"
+            className="text-6xl sm:text-7xl md:text-8xl font-light tracking-tight mb-6 opacity-0"
             style={{ fontFamily: 'var(--font-geist-sans)' }}
           >
             katherine
@@ -76,7 +78,7 @@ export default function Hero() {
           
           <p 
             ref={descriptionRef}
-            className="text-base md:text-lg text-gray-600 dark:text-gray-400 mb-8 max-w-md opacity-0"
+            className="text-sm md:text-base lg:text-lg text-gray-600 dark:text-gray-400 mb-8 max-w-md opacity-0 bg-background/70 dark:bg-background/70 backdrop-blur-sm md:backdrop-blur-none md:bg-transparent dark:md:bg-transparent p-2 md:p-0 rounded"
           >
             HELLO THERE — I'M KATHERINE, A DEVELOPER & AI ARTIST
             MERGING TECHNOLOGY WITH CREATIVITY TO BUILD 

@@ -29,7 +29,7 @@ const projects: Project[] = [
     description: "Professional portfolio website for an artist showcasing their work and achievements.",
     tags: ["WordPress", "UI/UX", "Web Design"],
     // Replace with actual image paths or use placeholders
-    imageUrl: "https://iili.io/3WTFxXR.png", 
+    imageUrl: "https://placehold.co/600x400/18181b/a3e635?text=Marie+Mberroho", 
     link: "https://mariemberroho.com",
     category: "WordPress"
   },

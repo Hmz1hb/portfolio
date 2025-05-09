@@ -72,7 +72,7 @@ export default function Header() {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link href="/" className="text-base font-light tracking-wide uppercase">
-            Katherine
+            Hamza
           </Link>
 
           {/* Desktop Navigation */}

@@ -73,14 +73,14 @@ export default function Hero() {
             className="text-6xl sm:text-7xl md:text-8xl font-light tracking-tight mb-6 opacity-0"
             style={{ fontFamily: 'var(--font-geist-sans)' }}
           >
-            katherine
+            Hamza
           </h1>
           
           <p 
             ref={descriptionRef}
             className="text-sm md:text-base lg:text-lg text-gray-600 dark:text-gray-400 mb-8 max-w-md opacity-0 bg-background/70 dark:bg-background/70 backdrop-blur-sm md:backdrop-blur-none md:bg-transparent dark:md:bg-transparent p-2 md:p-0 rounded"
           >
-            HELLO THERE — I'M KATHERINE, A DEVELOPER & AI ARTIST
+            HELLO THERE — I'M HAMZA, A DEVELOPER & AI ARTIST
             MERGING TECHNOLOGY WITH CREATIVITY TO BUILD 
             AWARD-WINNING DIGITAL EXPERIENCES
           </p>

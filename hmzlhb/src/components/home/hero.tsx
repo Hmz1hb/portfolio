@@ -4,6 +4,8 @@ import { useEffect, useRef } from "react";
 import { Button } from "../ui/button";
 import Container from "../ui/container";
 import ComputerObject from "../3d/ComputerObject";
+import StarField from "../3d/StarField";
+import ClientOnly from "../ui/client-only";
 import { fadeInUp, staggerElements } from "@/lib/animations";
 
 export default function Hero() {
@@ -53,8 +55,20 @@ export default function Hero() {
       ref={heroRef}
       className="relative min-h-[90vh] flex items-center opacity-0 transition-all duration-1000"
     >
+      {/* Add StarField background wrapped in ClientOnly */}
+      <div className="absolute inset-0 z-0 pointer-events-none">
+        <ClientOnly>
+          <StarField 
+            starCount={400} 
+            baseSpeed={0.015} 
+            twinkleIntensity={0.6}
+            backgroundColor="transparent" 
+          />
+        </ClientOnly>
+      </div>
+      
       {/* 3D Object Container - positioned behind content on mobile, to the right on desktop */}
-      <div className="absolute inset-0 z-0 flex items-center justify-center md:justify-end">
+      <div className="absolute inset-0 z-1 flex items-center justify-center md:justify-end">
         <div className="w-full md:w-1/2 h-full opacity-30 md:opacity-100">
           <ComputerObject />
         </div>

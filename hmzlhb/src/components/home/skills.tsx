@@ -1,61 +1,39 @@
 "use client";
 
 import React, { useState, useEffect, useRef, useCallback } from "react";
+import ClientOnly from "../ui/client-only";
+import StarField from "../3d/StarField";
 
-// --- Mock Components (Replace with your actual imports) ---
+// Mock Container component
 const Container = ({ children }: { children: React.ReactNode }) => (
   <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full">{children}</div>
 );
 
-const StarField = ({ starCount, color, speed, scrollFactor }: { starCount: number, color: string, speed: number, scrollFactor: number }) => (
-  <div className="absolute inset-0 pointer-events-none">
-    {/* Placeholder for StarField */}
-    <div className="absolute inset-0 opacity-50">
-      {Array.from({ length: 50 }).map((_, i) => (
-        <div
-          key={i}
-          className="absolute rounded-full bg-blue-400"
-          style={{
-            width: `${Math.random() * 2 + 1}px`,
-            height: `${Math.random() * 2 + 1}px`,
-            top: `${Math.random() * 100}%`,
-            left: `${Math.random() * 100}%`,
-            animation: `twinkle ${Math.random() * 5 + 3}s infinite alternate`,
-          }}
-        />
-      ))}
-    </div>
-    <style jsx>{`
-      @keyframes twinkle { 0% { opacity: 0.2; } 100% { opacity: 0.8; } }
-    `}</style>
-  </div>
-);
-
-// --- Interfaces ---
+// Skill interface
 interface Skill {
   name: string;
-  level: number; // Kept for potential future use (e.g., in hover details)
+  level: number;
   category: string;
-  description?: string; // Optional description for hover
+  description?: string;
 }
 
 interface BubbleState {
   id: string;
   skill: Skill;
-  x: number; // Position (percentage)
-  y: number; // Position (percentage)
-  vx: number; // Velocity x
-  vy: number; // Velocity y
-  radius: number; // Radius (percentage of container width)
-  isColliding: boolean; // Flag for collision visual effect
-  targetScale: number; // For entrance/collision/pop animation
-  isHovered: boolean; // For hover effect
-  isPopping: boolean; // Flag for pop animation state
-  popCount: number; // Counter for respawns
-  respawnTimerId?: NodeJS.Timeout; // Store timeout ID for cleanup
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  radius: number;
+  isColliding: boolean;
+  targetScale: number;
+  isHovered: boolean;
+  isPopping: boolean;
+  popCount: number;
+  respawnTimerId?: NodeJS.Timeout;
 }
 
-// --- Skill Data (Added descriptions) ---
+// Skill data
 const skills: Skill[] = [
   { name: "React", level: 90, category: "frontend", description: "Building dynamic UIs" },
   { name: "Next.js", level: 85, category: "frontend", description: "SSR & SSG with React" },
@@ -72,18 +50,18 @@ const skills: Skill[] = [
   { name: "Three.js", level: 75, category: "other", description: "3D graphics library" },
 ];
 
-// --- Constants ---
+// Constants
 const BUBBLE_BASE_SIZE_VW = 5;
 const BUBBLE_SIZE_VARIATION_VW = 2;
 const MIN_DISTANCE_MULTIPLIER = 1.1;
 const WALL_PADDING = 1;
 const BASE_SPEED = 0.03;
-const RESPAWN_DELAY = 1500; // Delay in ms before bubble reappears after pop
+const RESPAWN_DELAY = 1500;
 
-// --- Helper Functions ---
+// Helper function
 const getRandomVelocity = () => (Math.random() - 0.5) * BASE_SPEED * 2;
 
-// --- SkillBubble Component ---
+// SkillBubble Component
 interface SkillBubbleProps {
   bubble: BubbleState;
   containerWidth: number;
@@ -95,17 +73,16 @@ const SkillBubble: React.FC<SkillBubbleProps> = React.memo(({ bubble, containerW
   const { id, skill, x, y, radius, isColliding, targetScale, isHovered, isPopping, popCount } = bubble;
 
   const handleClick = (e: React.MouseEvent | React.KeyboardEvent) => {
-    // Prevent click event from triggering immediately after drag/selection (optional)
     if (e.type === 'click' && (e.detail === 0 || e.detail > 1)) {
        return;
     }
-    if (!isPopping) { // Prevent popping again while already popping/respawning
+    if (!isPopping) {
       onPop(id);
     }
   };
 
   const handleMouseEnter = () => {
-    if (!isPopping) { // Don't show hover details while popping
+    if (!isPopping) {
         onHover(id, true);
     }
   };
@@ -116,24 +93,24 @@ const SkillBubble: React.FC<SkillBubbleProps> = React.memo(({ bubble, containerW
 
   // Calculate size and position
   const sizePx = (radius * 2 * containerWidth) / 100;
-  const displaySize = Math.max(sizePx, 30); // Min 30px diameter
+  const displaySize = Math.max(sizePx, 30);
   const leftPos = `calc(${x}% - ${displaySize / 2}px)`;
   const topPos = `calc(${y}% - ${displaySize / 2}px)`;
 
   return (
     <div
       className={`absolute cursor-pointer group transition-transform,opacity duration-300 ease-out ${
-         isPopping ? 'pointer-events-none' : '' // Disable events during pop animation
+         isPopping ? 'pointer-events-none' : ''
       }`}
       style={{
         left: leftPos,
         top: topPos,
         width: `${displaySize}px`,
         height: `${displaySize}px`,
-        transform: `scale(${targetScale})`, // Scale for animations
-        opacity: isPopping ? 0 : 1, // Fade out on pop
-        zIndex: isHovered ? 10 : (isPopping ? 0 : 1), // Bring hovered bubble to front
-        transitionDelay: isPopping ? '0ms' : '0ms', // Control delays if needed
+        transform: `scale(${targetScale})`,
+        opacity: isPopping ? 0 : 1,
+        zIndex: isHovered ? 10 : (isPopping ? 0 : 1),
+        transitionDelay: isPopping ? '0ms' : '0ms',
       }}
       onClick={handleClick}
       onMouseEnter={handleMouseEnter}
@@ -148,15 +125,15 @@ const SkillBubble: React.FC<SkillBubbleProps> = React.memo(({ bubble, containerW
         className={`relative w-full h-full rounded-full border flex items-center justify-center shadow-xl transition-all duration-300 ease-out overflow-visible
           ${isColliding ? 'border-blue-300 border-2 scale-105' : 'border-blue-500/50 border'}
           bg-gradient-radial from-blue-500/10 via-blue-600/30 to-blue-800/50 backdrop-blur-sm
-          group-hover:from-blue-500/20 group-hover:via-blue-600/40 group-hover:to-blue-800/60`} // Use group-hover
+          group-hover:from-blue-500/20 group-hover:via-blue-600/40 group-hover:to-blue-800/60`}
       >
         {/* Inner highlight */}
         <div className="absolute top-[10%] left-[10%] w-[30%] h-[30%] bg-white/20 rounded-full blur-md"></div>
 
-        {/* Skill Name Text (always visible inside bubble) */}
+        {/* Skill Name Text */}
         <span
           className={`text-center text-xs sm:text-sm font-medium text-white transition-opacity duration-300 pointer-events-none ${
-            isHovered ? 'opacity-70' : 'opacity-100' // Slightly dim text on hover to make tooltip clearer
+            isHovered ? 'opacity-70' : 'opacity-100'
           }`}
         >
           {skill.name}
@@ -177,8 +154,7 @@ const SkillBubble: React.FC<SkillBubbleProps> = React.memo(({ bubble, containerW
         >
           <p className="font-semibold">{skill.name}</p>
           {skill.description && <p className="text-gray-300">{skill.description}</p>}
-          {/* You could add skill.level or category here too */}
-           <div className="absolute bottom-[-4px] left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-l-transparent border-r-transparent border-t-gray-900"></div> {/* Tooltip arrow */}
+           <div className="absolute bottom-[-4px] left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-l-transparent border-r-transparent border-t-gray-900"></div>
         </div>
       </div>
     </div>
@@ -186,15 +162,23 @@ const SkillBubble: React.FC<SkillBubbleProps> = React.memo(({ bubble, containerW
 });
 SkillBubble.displayName = 'SkillBubble';
 
-// --- Main Skills Component ---
+// Main Skills Component
 export default function Skills() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [bubbles, setBubbles] = useState<BubbleState[]>([]);
   const animationFrameRef = useRef<number>();
   const [containerWidth, setContainerWidth] = useState(0);
+  const [clientSide, setClientSide] = useState(false);
 
-  // --- Initialization ---
+  // Set clientSide to true after mount
   useEffect(() => {
+    setClientSide(true);
+  }, []);
+
+  // Initialize bubbles only on client-side
+  useEffect(() => {
+    if (!clientSide) return;
+    
     const initialBubbles: BubbleState[] = [];
     const maxAttempts = skills.length * 20;
     const tempContainerWidth = containerRef.current?.offsetWidth || window.innerWidth;
@@ -205,7 +189,7 @@ export default function Skills() {
         const radiusVW = BUBBLE_BASE_SIZE_VW + (Math.random() - 0.5) * 2 * BUBBLE_SIZE_VARIATION_VW;
         const radiusPercent = (radiusVW * window.innerWidth) / tempContainerWidth / 2;
 
-        const newBubble: Omit<BubbleState, 'respawnTimerId'> = { // Omit timer initially
+        const newBubble: Omit<BubbleState, 'respawnTimerId'> = {
           id: `skill-${index}-${skill.name}`,
           skill,
           x: WALL_PADDING + radiusPercent + Math.random() * (100 - 2 * WALL_PADDING - 2 * radiusPercent),
@@ -214,7 +198,7 @@ export default function Skills() {
           vy: getRandomVelocity(),
           radius: radiusPercent,
           isColliding: false,
-          targetScale: 0, // Start scaled down
+          targetScale: 0,
           isHovered: false,
           isPopping: false,
           popCount: 0,
@@ -232,11 +216,11 @@ export default function Skills() {
           }
         }
         if (!collision) {
-          initialBubbles.push(newBubble as BubbleState); // Add as BubbleState
+          initialBubbles.push(newBubble as BubbleState);
           placed = true;
         }
       }
-      if (!placed) { // Fallback if placement fails
+      if (!placed) {
          const radiusVW = BUBBLE_BASE_SIZE_VW + (Math.random() - 0.5) * 2 * BUBBLE_SIZE_VARIATION_VW;
          const radiusPercent = (radiusVW * window.innerWidth) / tempContainerWidth / 2;
          initialBubbles.push({
@@ -264,10 +248,9 @@ export default function Skills() {
     handleResize();
     window.addEventListener('resize', handleResize);
 
-    // Cleanup timers on unmount
+    // Cleanup
     return () => {
         window.removeEventListener('resize', handleResize);
-        // Clear any active respawn timers
         bubbles.forEach(bubble => {
             if (bubble.respawnTimerId) {
                 clearTimeout(bubble.respawnTimerId);
@@ -277,11 +260,9 @@ export default function Skills() {
             cancelAnimationFrame(animationFrameRef.current);
         }
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // Empty dependency array for init only
+  }, [clientSide]);
 
-
-  // --- Animation Loop ---
+  // Animation Loop
   const runAnimation = useCallback(() => {
     setBubbles(prevBubbles => {
       const nextBubbles = prevBubbles.map(b => ({ ...b, isColliding: false }));
@@ -289,7 +270,6 @@ export default function Skills() {
       // Update positions & collisions
       for (let i = 0; i < nextBubbles.length; i++) {
         const bubble = nextBubbles[i];
-        // Skip movement if popping
         if (bubble.isPopping) continue;
 
         bubble.x += bubble.vx;
@@ -337,11 +317,11 @@ export default function Skills() {
     });
 
     animationFrameRef.current = requestAnimationFrame(runAnimation);
-  }, []); // No dependencies needed if only using setBubbles updater form
+  }, []);
 
-  // Start animation loop
+  // Start animation loop when ready
   useEffect(() => {
-    if (bubbles.length > 0 && containerWidth > 0) { // Ensure bubbles & container are ready
+    if (clientSide && bubbles.length > 0 && containerWidth > 0) {
         animationFrameRef.current = requestAnimationFrame(runAnimation);
     }
     return () => {
@@ -349,9 +329,9 @@ export default function Skills() {
         cancelAnimationFrame(animationFrameRef.current);
       }
     };
-  }, [bubbles.length, containerWidth, runAnimation]);
+  }, [clientSide, bubbles.length, containerWidth, runAnimation]);
 
-  // --- Event Handlers ---
+  // Event Handlers
   const handleHover = useCallback((id: string, isHovering: boolean) => {
     setBubbles(prev => prev.map(b => b.id === id ? { ...b, isHovered: isHovering } : b));
   }, []);
@@ -360,44 +340,44 @@ export default function Skills() {
     setBubbles(prev => {
         let respawnTimerId: NodeJS.Timeout | undefined;
         const newBubbles = prev.map(b => {
-            if (b.id === id && !b.isPopping) { // Ensure not already popping
-                // Clear previous timer if it exists (e.g., rapid clicks)
+            if (b.id === id && !b.isPopping) {
                 if (b.respawnTimerId) {
                     clearTimeout(b.respawnTimerId);
                 }
-                // Set timer for respawn
                 respawnTimerId = setTimeout(() => {
                     setBubbles(currentBubbles => currentBubbles.map(cb =>
-                        cb.id === id ? { ...cb, isPopping: false, targetScale: 1, vx: getRandomVelocity(), vy: getRandomVelocity() } // Respawn: reset state
+                        cb.id === id ? { ...cb, isPopping: false, targetScale: 1, vx: getRandomVelocity(), vy: getRandomVelocity() }
                         : cb
                     ));
                 }, RESPAWN_DELAY);
 
-                // Return popped state
                 return {
                     ...b,
                     isPopping: true,
-                    targetScale: 0, // Animate scale down
+                    targetScale: 0,
                     popCount: b.popCount + 1,
-                    isHovered: false, // Hide hover on pop
-                    vx: 0, // Stop movement while popped
+                    isHovered: false,
+                    vx: 0,
                     vy: 0,
-                    respawnTimerId: respawnTimerId // Store timer ID
+                    respawnTimerId: respawnTimerId
                 };
             }
-            return b; // Return unchanged bubble
+            return b;
         });
-        return newBubbles; // Return updated array
+        return newBubbles;
     });
   }, []);
-
 
   return (
     <section
       id="skills-animated"
       className="py-24 md:py-32 min-h-screen relative overflow-hidden bg-black text-white"
     >
-      <StarField starCount={500} color="#3b82f6" speed={0.05} scrollFactor={0.2} />
+      {/* Wrap StarField with ClientOnly component */}
+      <ClientOnly>
+        <StarField starCount={500} color="#3b82f6" speed={0.05} scrollFactor={0.2} />
+      </ClientOnly>
+      
       <Container>
         <div className="mb-16 text-center relative z-10">
           <h2 className="text-5xl md:text-6xl font-light mb-6 uppercase tracking-wide">
@@ -411,7 +391,8 @@ export default function Skills() {
           ref={containerRef}
           className="relative h-[60vh] md:h-[70vh] w-full max-w-5xl mx-auto z-10 border border-blue-900/30 rounded-lg"
         >
-          {containerWidth > 0 && bubbles.map((bubble) => (
+          {/* Only render bubbles on client-side */}
+          {clientSide && containerWidth > 0 && bubbles.map((bubble) => (
             <SkillBubble
               key={bubble.id}
               bubble={bubble}
@@ -425,12 +406,3 @@ export default function Skills() {
     </section>
   );
 }
-
-// Add CSS Gradient definition if not globally available via Tailwind config
-/*
-@layer utilities {
-  .bg-gradient-radial {
-    background-image: radial-gradient(circle, var(--tw-gradient-stops));
-  }
-}
-*/

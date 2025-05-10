@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useInView } from "react-intersection-observer";
 import Container from "../ui/container";
+import ProjectGalleryModal from "./project-gallery-modal";
 
 // Define project type
 interface Project {
@@ -12,7 +13,8 @@ interface Project {
   title: string;
   description: string;
   tags: string[];
-  imagePath: string;
+  imagePath: string; // Main image (for backward compatibility)
+  images?: string[]; // Optional array of images for gallery
   link: string;
   category: string;
 }
@@ -20,21 +22,60 @@ interface Project {
 // Project data
 const projects: Project[] = [
   {
-    id: "mariem-mberroho",
-    title: "Marie Mberroho Portfolio",
-    description: "Professional portfolio website for an artist showcasing their work and achievements.",
-    tags: ["WordPress", "UI/UX", "Web Design"],
-    imagePath: "/images/marie-mberroho.webp",
-    link: "https://mariemberroho.com",
+    id: "The-SEO-Boost",
+    title: "The SEO Boost",
+    description: "A digital marketing agency focused on SEO and online visibility.",
+    tags: ["Reactjs", "Nextjs", "Typescript" , "SEO", "Web Design"],
+    imagePath: "/images/the-seo-boost.webp",
+    images: [
+      "/images/the-seo-boost.webp",
+      "/images/the-seo-boost-2.webp",
+      "/images/the-seo-boost-3.webp",
+      "/images/the-seo-boost-4.webp",
+      "/images/the-seo-boost-5.webp",
+    ],
+    link: "https://theseoboost.com",
+    category: "Reactjs & Nextjs"
+  },
+  {
+    id: "Websolutions",
+    title: "Websolutions",
+    description: "A web development company specializing in custom solutions and digital marketing.",
+    tags: ["WordPress", "PHP", "Custom Development"],
+    imagePath: "/images/websolutions.webp",
+    images: [
+      "/images/websolutions.webp",
+      "/images/websolutions-2.webp",
+    ],
+    link: "https://websolutions.ma",
     category: "WordPress"
   },
   {
     id: "africa-tree",
     title: "Africa Tree Foundation",
     description: "Donation collection platform for environmental conservation efforts across Africa.",
-    tags: ["WordPress", "Donation Platform", "Non-profit"],
+    tags: ["WordPress", "PHP", "Non-profit"],
     imagePath: "/images/africa-tree.webp",
+    images: [
+      "/images/africa-tree.webp",
+      "/images/africa-tree-2.webp",
+      "/images/africa-tree-3.webp",
+    ],
     link: "https://africatree.org",
+    category: "WordPress"
+  },
+  {
+    id: "mariem-mberroho",
+    title: "Marie Mberroho Portfolio",
+    description: "Professional portfolio website for an artist showcasing their work and achievements.",
+    tags: ["WordPress", "UI/UX", "Web Design"],
+    imagePath: "/images/marie-mberroho.webp",
+    images: [
+      "/images/marie-mberroho.webp",
+      "/images/marie-mberroho-2.webp",
+      "/images/marie-mberroho-3.webp"
+    ],
+    link: "https://mariemberroho.com",
     category: "WordPress"
   },
   {
@@ -43,6 +84,12 @@ const projects: Project[] = [
     description: "Booking platform for guided tours with integrated payment processing system.",
     tags: ["PHP", "MySQL", "Stripe API", "JavaScript"],
     imagePath: "/images/tangier-tours.webp",
+    images: [
+      "/images/tangier-tours.webp",
+      "/images/tangier-tours-2.webp",
+      "/images/tangier-tours-3.webp",
+      "/images/tangier-tours-4.webp"
+    ],
     link: "#",
     category: "Custom PHP"
   },
@@ -52,6 +99,12 @@ const projects: Project[] = [
     description: "Showcase website for a film production company featuring their portfolio and services.",
     tags: ["HTML", "JavaScript", "PHP", "MySQL", "SASS"],
     imagePath: "/images/mundi-media.webp",
+    images: [
+      "/images/mundi-media.webp",
+      "/images/mundi-media-2.webp",
+      "/images/mundi-media-3.webp",
+      "/images/mundi-media-4.webp"
+    ],
     link: "#",
     category: "Web Development"
   },
@@ -59,8 +112,16 @@ const projects: Project[] = [
     id: "daddy-shop",
     title: "Daddy Shop",
     description: "Catalog website with custom media upload functionality and folder display systems.",
-    tags: ["TypeScript", "React", "Node.js"],
+    tags: ["TypeScript", "GO", "Node.js"],
     imagePath: "/images/daddy-shop.webp",
+    images: [
+      "/images/daddy-shop.webp",
+      "/images/daddy-shop-2.webp",
+      "/images/daddy-shop-3.webp",
+      "/images/daddy-shop-4.webp",
+      "/images/daddy-shop-5.webp",
+      "/images/daddy-shop-6.webp",
+    ],
     link: "#",
     category: "TypeScript"
   },
@@ -70,6 +131,11 @@ const projects: Project[] = [
     description: "E-commerce clothing website with product catalogs, cart functionality, and secure checkout.",
     tags: ["Shopify", "E-commerce", "Custom Theme"],
     imagePath: "/images/boutique-street.webp",
+    images: [
+      "/images/boutique-street.webp",
+      "/images/boutique-street-2.webp",
+      "/images/boutique-street-3.webp"
+    ],
     link: "https://boutiquestreet.store",
     category: "Shopify"
   },
@@ -99,6 +165,7 @@ export default function Projects() {
   });
   
   const projectsRef = useRef<HTMLDivElement>(null);
+  const [activeGallery, setActiveGallery] = useState<Project | null>(null);
   
   useEffect(() => {
     // Trigger animation when the section is in view
@@ -107,6 +174,17 @@ export default function Projects() {
       staggerElements(projectElements as NodeListOf<HTMLElement>, fadeInUp, 0.1);
     }
   }, [inView]);
+  
+  const openGallery = (project: Project) => {
+    // Only open gallery if project has multiple images
+    if (project.images && project.images.length > 1) {
+      setActiveGallery(project);
+    }
+  };
+  
+  const closeGallery = () => {
+    setActiveGallery(null);
+  };
   
   return (
     <div className="relative">
@@ -140,8 +218,13 @@ export default function Projects() {
                 key={project.id} 
                 className="project-card flex flex-col opacity-0 group"
               >
-                {/* Image container - Cleaner style with proper aspect ratio */}
-                <div className="relative aspect-[4/3] w-full mb-4 overflow-hidden bg-zinc-900 border border-zinc-800">
+                {/* Image container - With gallery functionality */}
+                <div 
+                  className={`relative aspect-[4/3] w-full mb-4 overflow-hidden bg-zinc-900 border border-zinc-800 ${
+                    project.images && project.images.length > 1 ? 'cursor-pointer' : ''
+                  }`}
+                  onClick={() => openGallery(project)}
+                >
                   {/* Fallback display */}
                   <div className="absolute inset-0 flex items-center justify-center text-zinc-700 font-light z-0">
                     {project.title}
@@ -159,6 +242,15 @@ export default function Projects() {
                       target.style.display = 'none';
                     }}
                   />
+                  
+                  {/* Gallery indicator (only if multiple images) */}
+                  {project.images && project.images.length > 1 && (
+                    <div className="absolute bottom-3 right-3 bg-black/70 text-white text-xs px-2 py-1 rounded-full z-20 transition-opacity group-hover:opacity-100 opacity-70">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      </svg>
+                    </div>
+                  )}
                 </div>
                 
                 {/* Text content - Minimalist style */}
@@ -229,6 +321,16 @@ export default function Projects() {
           </div>
         </Container>
       </section>
+      
+      {/* Gallery Modal */}
+      {activeGallery && activeGallery.images && (
+        <ProjectGalleryModal
+          isOpen={!!activeGallery}
+          images={activeGallery.images}
+          projectTitle={activeGallery.title}
+          onClose={closeGallery}
+        />
+      )}
     </div>
   );
 }

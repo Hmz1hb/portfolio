@@ -12,19 +12,19 @@ interface Project {
   title: string;
   description: string;
   tags: string[];
-  imagePath: string; // Path to image in public directory
+  imagePath: string;
   link: string;
   category: string;
 }
 
-// Project data with correct image paths
+// Project data
 const projects: Project[] = [
   {
-    id: "marie-mberroho",
+    id: "mariem-mberroho",
     title: "Marie Mberroho Portfolio",
     description: "Professional portfolio website for an artist showcasing their work and achievements.",
     tags: ["WordPress", "UI/UX", "Web Design"],
-    imagePath: "/image.png", // Placeholder until real images are added
+    imagePath: "/images/marie-mberroho.webp",
     link: "https://mariemberroho.com",
     category: "WordPress"
   },
@@ -33,7 +33,7 @@ const projects: Project[] = [
     title: "Africa Tree Foundation",
     description: "Donation collection platform for environmental conservation efforts across Africa.",
     tags: ["WordPress", "Donation Platform", "Non-profit"],
-    imagePath: "/placeholder.jpg",
+    imagePath: "/images/africa-tree.webp",
     link: "https://africatree.org",
     category: "WordPress"
   },
@@ -42,8 +42,8 @@ const projects: Project[] = [
     title: "Tangier Day Tours",
     description: "Booking platform for guided tours with integrated payment processing system.",
     tags: ["PHP", "MySQL", "Stripe API", "JavaScript"],
-    imagePath: "/placeholder.jpg",
-    link: "#", // Using hash to avoid invalid URL issues
+    imagePath: "/images/tangier-tours.webp",
+    link: "#",
     category: "Custom PHP"
   },
   {
@@ -51,7 +51,7 @@ const projects: Project[] = [
     title: "Mundi Media",
     description: "Showcase website for a film production company featuring their portfolio and services.",
     tags: ["HTML", "JavaScript", "PHP", "MySQL", "SASS"],
-    imagePath: "/placeholder.jpg",
+    imagePath: "/images/mundi-media.webp",
     link: "#",
     category: "Web Development"
   },
@@ -60,7 +60,7 @@ const projects: Project[] = [
     title: "Daddy Shop",
     description: "Catalog website with custom media upload functionality and folder display systems.",
     tags: ["TypeScript", "React", "Node.js"],
-    imagePath: "/placeholder.jpg",
+    imagePath: "/images/daddy-shop.webp",
     link: "#",
     category: "TypeScript"
   },
@@ -69,7 +69,7 @@ const projects: Project[] = [
     title: "Boutique Street",
     description: "E-commerce clothing website with product catalogs, cart functionality, and secure checkout.",
     tags: ["Shopify", "E-commerce", "Custom Theme"],
-    imagePath: "/placeholder.jpg",
+    imagePath: "/images/boutique-street.webp",
     link: "https://boutiquestreet.store",
     category: "Shopify"
   },
@@ -110,93 +110,96 @@ export default function Projects() {
   
   return (
     <div className="relative">
-      <div className="absolute inset-0 bg-gray-100 dark:bg-black" style={{ zIndex: 5 }}></div>
+      {/* Opaque background shield */}
+      <div className="absolute inset-0 bg-black" style={{ zIndex: 5 }}></div>
       
       <section 
         id="projects" 
         ref={sectionRef}
-        className="py-20 md:py-28 bg-gray-100 dark:bg-black text-gray-900 dark:text-gray-100 relative"
+        className="py-20 md:py-28 bg-black text-white relative"
         style={{ zIndex: 6, position: 'relative' }}
       >
         <Container>
-          <div className="mb-16 text-center md:text-left md:flex md:justify-between md:items-end">
-            <div>
-              <h2 className="text-4xl md:text-5xl font-bold mb-4 uppercase tracking-wide">
-                Our Projects
-              </h2>
-              <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto md:mx-0">
-                A selection of our most loved and passionate work.
-              </p>
-            </div>
+          {/* Section Header - Minimalist Style */}
+          <div className="mb-20 border-b border-zinc-800 pb-4">
+            <h2 className="text-3xl md:text-4xl font-light mb-2 tracking-wider uppercase">
+              Projects
+            </h2>
+            <p className="text-sm text-zinc-400 mb-4">
+              Selected works and recent projects
+            </p>
           </div>
           
+          {/* Projects Grid - Modern, Minimalist Layout */}
           <div 
             ref={projectsRef}
-            className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10" 
+            className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12" 
           >
             {projects.map((project) => (
               <div 
                 key={project.id} 
-                className="project-card flex flex-col bg-white dark:bg-zinc-900 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700/50 shadow-sm hover:shadow-md dark:hover:shadow-lg dark:hover:shadow-lime-500/10 transition-all duration-300 opacity-0 group"
+                className="project-card flex flex-col opacity-0 group"
               >
-                {/* Image container */}
-                <div className="relative h-60 w-full overflow-hidden bg-gray-200 dark:bg-gray-800">
-                  {/* Temporary display: Use a div with project title until images are properly set up */}
-                  <div className="absolute inset-0 flex items-center justify-center text-gray-500 dark:text-gray-400 text-lg font-medium">
+                {/* Image container - Cleaner style with proper aspect ratio */}
+                <div className="relative aspect-[4/3] w-full mb-4 overflow-hidden bg-zinc-900 border border-zinc-800">
+                  {/* Fallback display */}
+                  <div className="absolute inset-0 flex items-center justify-center text-zinc-700 font-light z-0">
                     {project.title}
                   </div>
                   
-                  {/* Commented out Next Image component until image URLs are fixed */}
-                  {/* 
+                  {/* Image with hover effect */}
                   <Image 
                     src={project.imagePath}
                     alt={`Project: ${project.title}`}
                     fill
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                    quality={90}
-                    priority={projects.indexOf(project) < 2}
-                    className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 25vw"
+                    className="object-cover opacity-80 transition-all duration-700 group-hover:opacity-100 z-10"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.style.display = 'none';
+                    }}
                   />
-                  */}
                 </div>
                 
-                <div className="flex-1 p-6 flex flex-col justify-between">
-                  <div>
-                    <h3 className="text-xl font-semibold mb-2 text-gray-900 dark:text-white">
+                {/* Text content - Minimalist style */}
+                <div className="flex-1 flex flex-col">
+                  {/* Project Number + Title */}
+                  <div className="flex items-baseline gap-3 mb-1">
+                    <span className="text-xs text-zinc-500 font-mono">
+                      {(projects.indexOf(project) + 1).toString().padStart(2, '0')}
+                    </span>
+                    <h3 className="text-lg font-light text-white">
                       {project.title}
                     </h3>
-                    
-                    <div className="text-sm text-gray-500 dark:text-gray-400 mb-4 uppercase tracking-wider font-medium">
-                      {project.tags.join(' • ')} 
-                    </div>
-
-                    <p className="text-gray-600 dark:text-gray-300 mb-6 text-base leading-relaxed">
-                      {project.description}
-                    </p>
                   </div>
                   
-                  {/* Link element - Ensure URL is valid */}
+                  {/* Tags */}
+                  <div className="text-xs text-zinc-500 mb-2 font-light">
+                    {project.tags.slice(0, 3).join(' • ')}
+                  </div>
+
+                  {/* Link - Minimal style */}
                   {project.link && project.link !== "#" ? (
                     <Link 
                       href={project.link}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-lime-500 dark:hover:text-lime-400 transition-colors group"
+                      className="mt-auto text-xs font-light text-zinc-400 hover:text-white hover:underline transition-colors group inline-flex items-center"
                     >
                       View Project
                       <svg 
                         xmlns="http://www.w3.org/2000/svg" 
-                        className="h-4 w-4 ml-1 transition-transform duration-300 group-hover:translate-x-1"
+                        className="h-3 w-3 ml-1 transition-transform duration-300 group-hover:translate-x-1"
                         fill="none" 
                         viewBox="0 0 24 24" 
                         stroke="currentColor"
-                        strokeWidth={2}
+                        strokeWidth={1}
                       >
                         <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" /> 
                       </svg>
                     </Link>
                   ) : (
-                    <span className="inline-flex items-center text-sm font-medium text-gray-400 dark:text-gray-500">
+                    <span className="mt-auto text-xs font-light text-zinc-600">
                       Coming Soon
                     </span>
                   )}
@@ -205,19 +208,20 @@ export default function Projects() {
             ))}
           </div>
           
-          <div className="mt-16 text-center">
+          {/* View All Button - Minimalist style */}
+          <div className="mt-20 text-center">
             <Link
               href="/projects"
-              className="inline-flex items-center px-8 py-3 border border-gray-300 dark:border-gray-600 rounded-full text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-lime-500 hover:text-black dark:hover:bg-lime-400 dark:hover:text-black hover:border-lime-500 dark:hover:border-lime-400 transition-all duration-300 group"
+              className="inline-flex items-center px-8 py-2 border border-zinc-800 rounded-none text-sm font-light text-zinc-300 hover:bg-zinc-800 transition-all duration-300 group tracking-wide"
             >
-              View All Projects
+              View All Work
               <svg 
                 xmlns="http://www.w3.org/2000/svg" 
                 className="h-4 w-4 ml-2 transition-transform duration-300 group-hover:translate-x-1"
                 fill="none" 
                 viewBox="0 0 24 24" 
                 stroke="currentColor"
-                strokeWidth={2}
+                strokeWidth={1}
               >
                 <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
               </svg>
